@@ -1,0 +1,36 @@
+The deliverables for Case Study 2 from Google Data Analytics course.
+
+Copied from the case study:
+  Ask
+  Sršen asks you to analyze smart device usage data in order to gain insight into how consumers use non-Bellabeat smart
+  devices. She then wants you to select one Bellabeat product to apply these insights to in your presentation. These questions
+  will guide your analysis:
+  1. What are some trends in smart device usage?
+  2. How could these trends apply to Bellabeat customers?
+  3. How could these trends help influence Bellabeat marketing strategy?
+
+  You will produce a report with the following deliverables:
+  1. A clear summary of the business task
+  2. A description of all data sources used
+    The data used is downloaded from Kaggle ( FitBit Fitness Tracker Data (CC0: Public Domain, dataset made available through Mobius)).
+    The datasets used are in long format and organized based on Primary key of Id.
+    Data is reliable in that it was extracted from the smart device without human error though not a large sample size so could be biased since only from 30 users who consented to share data
+    Data is a public dataset posted online with credible acknowledgements so would believe it is original
+    As dataset contains second/minute/hour, daily and covers sleep, activity, heartrate, weight, calories and all the areas tracked by their fitbits it is comprehensive
+    The data is from 2016 so it is now 5 years ago so not the most current data but has been cited and confirmed. Since the data is part of public domain and publicly posted it is usable when cited correctly.
+    To verify integrity I looked into the original post and acknowledgements then checked some of the csv's for how the data is arranged. This data will help answer the original question by providing a snapshot
+    of how some non-Beatbella devices are using their devices and their features. Some problems with the data are that it is limited in scope and details of the device and features are not known.
+  3. Documentation of any cleaning or manipulation of data
+    Markdown file on Kaggle 
+  4. A summary of your analysis
+    Less users had sleep data (24 users versus 33 for other observations)
+    Even less users reported weight, 8 (not auto recorded, manually entered)
+    The Activity and Sleep datasets appear to have been populated from the data recorded by the device compared to the user having to manually enter their weight data into the app resulting in less users using the weight tracking function.
+    Significantly less weight information in the datasets so not the most reliable data so will not focus on using it.
+    ##the higher the sedentary minutes the less total steps, position devices as way to start walking more as opposed to tracking current activity
+    Over the observed 30 days only the first 3 did all 33 
+    
+  5. Supporting visualizations and key findings
+  6. Your top high-level content recommendations based on your analysis
+
+ One idea is that the company could use the data to implement new features to help users avoid spending time in bed that is not sleeping or at least identifying that time better. Another is that users were less likely to use the weight functions in the dataset so finding ways to make it easier for the user could drive more use of the devices.
