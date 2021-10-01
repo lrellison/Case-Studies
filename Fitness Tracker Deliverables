@@ -28,9 +28,12 @@ Copied from the case study:
     The Activity and Sleep datasets appear to have been populated from the data recorded by the device compared to the user having to manually enter their weight data into the app resulting in less users using the weight tracking function.
     Significantly less weight information in the datasets so not the most reliable data so will not focus on using it.
     ##the higher the sedentary minutes the less total steps, position devices as way to start walking more as opposed to tracking current activity
-    Over the observed 30 days only the first 3 did all 33 
-    
+    Over the observed 31 days the first 4 days had observations from 33 users instead of the 30 the desciption of dataset mentioned. However there don't appear to be any duplicate entries.
+        
   5. Supporting visualizations and key findings
+  
+  
   6. Your top high-level content recommendations based on your analysis
-
- One idea is that the company could use the data to implement new features to help users avoid spending time in bed that is not sleeping or at least identifying that time better. Another is that users were less likely to use the weight functions in the dataset so finding ways to make it easier for the user could drive more use of the devices.
+    Focusing on attracting users by emphasizing features to prevent sedentary time instead of focusing on helping users track current activity. 
+ One idea is that the company could use the data to implement new features to help users avoid spending time in bed that is not sleeping or at least identifying that time better. 
+ Another is that users were less likely to use the weight functions in the dataset so finding ways to make it easier for the user could drive more use of the devices.
