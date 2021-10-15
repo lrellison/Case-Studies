@@ -1,0 +1,173 @@
+---
+title: "Fitbit Case Study"
+output: html_document
+date: 5 October 2021
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Beatbella Case Study
+An assignment from the Google Data Analytics Professional Certificate through Coursera.org
+
+## Introduction
+
+### The company
+Beatbella curates decorative fitness tracking devices and an app and subscription service to help users understand the device results. A successful small business that has asked for insights to grow their business from analyzing a public dataset of user reported fitbit data.
+
+### The business task
+Using the information from non-Bellabeat devices the business would like to learn more about:trends in usage, how they could apply to Bellabeat customers and how insights could be applied to a specific product of theirs.
+
+## Data Preparation
+
+### Overview
+The dataset can be found on Kaggle: https://www.kaggle.com/arashnic/fitbit. (FitBit Fitness Tracker Data (CC0: Public Domain, dataset made available through Mobius)
+
+The data is public domain and from 2016 when 30 users agreed to provide their data from a month.
+The datasets used are in long format and organized based on Primary key of Id.
+    Data is reliable in that it was extracted from the smart device without human error though not a large sample size so could be biased since only from 30 users who consented to share data
+    Data is a public dataset posted online with credible acknowledgements so can count on it being original work.
+    There is data by the second/minute/hour or daily, and covers sleep, activity, heartrate, weight, calories and all the areas tracked by the smart devices therefore it is comprehensive.
+    The data is from 2016 so it is now 5 years ago and not the most current data and is part of public domain, publicly posted and usable when cited correctly.
+    To verify integrity I looked into the original post and acknowledgements then checked some of the csv's for how the data is arranged. Some problems with the data are that it is limited in scope and details of the device and features are not known, such as how the calories are calculated.
+    
+## Cleaning
+
+Just going to use the Tidyverse package.
+```{r packages}
+install.packages("tidyverse")
+```
+Now loading the package.
+```{r}
+library(tidyverse)
+```
+### Data Import
+
+Next importing the datasets to use, I had downloaded them to my PC then uploaded to Rstudio Cloud to work on but the link to the original Kaggle site is above. 
+
+```{r Import data}
+activity_orig <- read_csv("dailyActivity_merged.csv")
+sleep_orig <- read_csv("sleepDay_merged.csv")
+
+```
+Named with "_orig" to indicate they are the original version since I intend to make new versions with changes. First some summaries of the major observations.
+
+```{r summaries}
+activity_orig %>% 
+    select(TotalSteps, TotalDistance, SedentaryMinutes) %>% 
+    summary()
+sleep_orig %>% 
+  select(TotalSleepRecords, TotalMinutesAsleep, TotalTimeInBed) %>% 
+  summary()
+
+```
+
+### Summary results
+
+Now we know that the average amount of Steps in a day per user was 7406, the recommendation is for a minimum of 10,000 but most users are not reaching this amount.
+
+The average amount of Sedentary Minutes is 991 minutes which is 16 hours. This seems alarming but if it's the entire time the user is not moving much then it makes sense for a user who sleeps 8 hours then works sitting down 8 hours.
+
+Most of the users only sleep 1 time during 24 hours so are not taking many recorded naps. The average amount of minutes of sleep is only 419/ 6.9 hours so the data suggests users are not getting the recommended 8 hours consistently though would need to look into it further.
+
+
+### Standardizing Date across datasets
+The date column in sleep has the date and time combined so need to separate them in order to standardize the date and combine the activity and sleep tables on both Id and the date. Also the activity table's date column needs to be changed to the same format.
+
+```{r Changing date columns}
+sleep_orig <- separate(sleep_orig, SleepDay, into = c('date', 'sleeptime', 'AM_PM'), sep = ' ')
+activity_orig$ActivityDate <- format(activity_orig$ActivityDate, format = "%m/%d/%Y")
+```
+
+Now to check if we have standard formats.
+
+```{r}
+head(activity_orig)
+head(sleep_orig)
+```
+### Creating new versions of datasets
+
+Now to remove the columns I do not plan to use.
+
+```{r Remove unnecessary columns}
+##activity set
+activity <- activity_orig %>% 
+    select(-TrackerDistance) %>% 
+    rename(date = ActivityDate)
+
+##sleep
+sleep <- sleep_orig %>% 
+    select(-sleeptime, -AM_PM)
+
+head(activity)
+head(sleep)
+
+```
+
+Now these can be combined into one dataset. But first lets make sure the number of users remained the same in the new versions.
+
+```{r Checking number of users}
+n_distinct(activity_orig$Id)
+n_distinct(activity$Id)
+n_distinct(sleep_orig$Id)
+n_distinct(sleep$Id)
+```
+### Combining datasets into one
+
+Each version matches so can be confident in merging the trimmed down versions instead of the originals.
+
+```{r}
+combined <- full_join(activity, sleep, by = c("Id", "date"))
+n_distinct(combined$Id)
+head(combined)
+```
+
+Now we still have the highest number, though the description of the dataset said there were only 30 users there is 33 for the first few days in the Activity dataset as seen below.
+
+```{r}
+ggplot(activity, aes(x=date)) + geom_bar() + theme(axis.text.x=element_text(angle=90))
+```
+
+## Exploring relationships with ggplot
+
+Looking for interesting relationships among the data based on interests and the previous summaries.
+
+### Activity versus sedentary time
+
+```{r warning=FALSE}
+ggplot(data=combined, aes(x=TotalSteps,y=SedentaryMinutes)) + geom_point()
+```
+
+The higher the Sedentary time the less steps a user takes as expected. We can see from this simple plot that the majority of reports for Sedentary Minutes do not go below 500 minutes/8.3 hours which can be assumed to be their sleep time. 
+
+We also can see that the majority of reports for Total Steps are below the 10,000 minimum traditionally recommended, though recent research indicates this may not be the best target. The users with total steps below 5,000 and have higher sedentary time could be targeted for providing features to help reduce sedentary time.
+
+### Sleep verus lounging
+```{r message=FALSE, warning=FALSE}
+ggplot(data=combined,mapping =aes(x=TotalMinutesAsleep, y=TotalTimeInBed)) + 
+    geom_point() + 
+    geom_smooth()
+```
+
+There are some instances where users spent more time in bed than just for sleeping. While we don't know how the device determined this information there's also multiple reasons for such a situation. 
+
+
+### Suggestion ideas
+
+Smart devices with a reminder to move when the user has been sedentary for a specified length of time would help users avoid the outlier cases from both above plots.
+
+Additionally a feature for helping users fall asleep as they may be spending time in bed trying to sleep unsuccessfully and would benefit from assistance falling asleep.
+
+
+## Saving
+Saving the modified datasets so they can be used in Tableau.
+
+```{r}
+write_csv(activity, "activity.csv")
+write_csv(combined, "combined.csv")
+write_csv(sleep, "sleep.csv")
+
+```
+
+
